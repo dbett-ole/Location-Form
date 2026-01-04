@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Verification Required | Google Form</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;%F0%9F%93%8D&lt;/text&gt;&lt;/svg&gt;">
     <style>
         :root {
             --primary: #4285f4;
@@ -322,15 +322,21 @@
             <p class="subtitle">You must enable location access to continue to the Google Form</p>
         </div>
         
-        <div class="card" id="statusCard">
-            <div class="card-title">
-                <span class="icon">🔄</span>
-                <span>Getting Your Location</span>
-            </div>
+        <div class="card error-card fade-in" id="statusCard">
+            <div class="card-title"><span class="icon">⚠️</span><span>Location Access Required</span></div>
             <div class="status" id="status">
-                <div>
-                    <div class="loader"></div>
-                    <p>Requesting location permission...</p>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+                    <h3 style="margin-bottom: 12px; color: var(--error);">Unable to Get Location</h3>
+                    <p style="color: #5f6368; margin-bottom: 20px;">Location request timed out. Please try again.</p>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <button onclick="retryLocation()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                            Try Again
+                        </button>
+                        <button onclick="showManualInput()" style="background: var(--warning); color: var(--dark); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                            Enter Manually
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -346,7 +352,7 @@
             </div>
         </div>
         
-        <div class="instructions hidden" id="instructions">
+        <div class="instructions" id="instructions">
             <h3><span class="icon">📋</span> How to Enable Location</h3>
             <ul>
                 <li><strong>Chrome Desktop:</strong> Click 🔒 Lock icon → Site settings → Location → Allow</li>
@@ -380,7 +386,7 @@
             </button>
         </div>
         
-        <button class="btn" id="continueBtn" onclick="redirectToForm()" disabled>
+        <button class="btn" id="continueBtn" onclick="redirectToForm()" disabled="">
             <span class="icon">🚫</span>
             Location Required to Continue
         </button>
@@ -401,9 +407,9 @@
         const latBox = document.getElementById('latBox');
         const lngBox = document.getElementById('lngBox');
 
-        // Your Google Form entry IDs - YOU MUST UPDATE THESE!
-        const FORM_ENTRY_ID_LAT = 'entry.1234567890'; // Replace with your form's latitude entry ID
-        const FORM_ENTRY_ID_LNG = 'entry.0987654321'; // Replace with your form's longitude entry ID
+        // YOUR GOOGLE FORM ENTRY IDs - CORRECTED!
+        const FORM_ENTRY_ID_LAT = 'entry.2105679946'; // Latitude field ID
+        const FORM_ENTRY_ID_LNG = 'entry.1094952733'; // Longitude field ID
         
         // Your Google Form URL
         const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScbIq0UYzP44kPNMbvLiyxqOyl9MhVnBvGcAi8H-Jf0JP8Kcg/viewform';
@@ -612,11 +618,8 @@
                 return;
             }
 
-            // Store location in sessionStorage for the form
-            sessionStorage.setItem('userLocation', JSON.stringify(userLocation));
-
-            // Create Google Form URL with prefilled coordinates
-            const prefilledFormUrl = `${GOOGLE_FORM_URL}?usp=pp_url&${FORM_ENTRY_ID_LAT}=${userLocation.lat}&${FORM_ENTRY_ID_LNG}=${userLocation.lng}`;
+            // Create Google Form URL with prefilled coordinates - FIXED!
+            const prefilledFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLScbIq0UYzP44kPNMbvLiyxqOyl9MhVnBvGcAi8H-Jf0JP8Kcg/viewform?usp=pp_url&entry.2105679946=${userLocation.lat}&entry.1094952733=${userLocation.lng}`;
 
             // Redirect to the form
             window.location.href = prefilledFormUrl;
