@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Verification Required | Google Form</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>">
+    <style>
+        :root {
+            --primary: #4285f4;
+            --success: #34a853;
+            --warning: #fbbc05;
+            --error: #ea4335;
+            --dark: #202124;
+            --light: #f8f9fa;
+            --gray: #dadce0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8f0fe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 16px 48px rgba(66, 133, 244, 0.15);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--gray);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #5f6368;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+        
+        .card-title .icon {
+            font-size: 24px;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            min-height: 200px;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(66, 133, 244, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .coord-box {
+            background: white;
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .coord-box.active {
+            border-color: var(--primary);
+            background: #e8f0fe;
+        }
+        
+        .coord-label {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .coord-value {
+            font-size: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .error-card {
+            background: #fce8e6;
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        
+        .success-card {
+            background: #e6f4ea;
+            border: 1px solid var(--success);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(66, 133, 244, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #2e8b47;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+        }
+        
+        .btn-secondary {
+            background: #5f6368;
+            margin-top: 12px;
+        }
+        
+        .manual-input {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+            border: 1px solid var(--gray);
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .instructions {
+            background: #fef7e0;
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .instructions h3 {
+            color: var(--warning);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .instructions ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+                border-radius: 20px;
+            }
+            
+            .coordinates {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 14px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <div class="header">
+            <div class="logo">📍</div>
+            <h1>Location Verification Required</h1>
+            <p class="subtitle">You must enable location access to continue to the Google Form</p>
+        </div>
+        
+        <div class="card" id="statusCard">
+            <div class="card-title">
+                <span class="icon">🔄</span>
+                <span>Getting Your Location</span>
+            </div>
+            <div class="status" id="status">
+                <div>
+                    <div class="loader"></div>
+                    <p>Requesting location permission...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="coordinates hidden" id="coordinates">
+            <div class="coord-box" id="latBox">
+                <div class="coord-label">Latitude</div>
+                <div class="coord-value" id="latitude">--.--</div>
+            </div>
+            <div class="coord-box" id="lngBox">
+                <div class="coord-label">Longitude</div>
+                <div class="coord-value" id="longitude">--.--</div>
+            </div>
+        </div>
+        
+        <div class="instructions hidden" id="instructions">
+            <h3><span class="icon">📋</span> How to Enable Location</h3>
+            <ul>
+                <li><strong>Chrome Desktop:</strong> Click 🔒 Lock icon → Site settings → Location → Allow</li>
+                <li><strong>Android Chrome:</strong> Settings → Site settings → Location → Allow for this site</li>
+                <li><strong>Safari iOS:</strong> Settings → Safari → Location Services → While Using the App</li>
+            </ul>
+            <p><strong>Note:</strong> Location access is required. Form cannot be submitted without coordinates.</p>
+        </div>
+        
+        <div class="manual-input hidden" id="manualInput">
+            <h3 class="card-title">Enter Coordinates Manually</h3>
+            <p style="margin-bottom: 20px; color: #5f6368;">Get coordinates from Google Maps (right-click → "What's here?")</p>
+            
+            <div class="input-group">
+                <label for="manualLat">Latitude</label>
+                <input type="text" id="manualLat" placeholder="e.g., 40.7128" inputmode="decimal">
+            </div>
+            
+            <div class="input-group">
+                <label for="manualLng">Longitude</label>
+                <input type="text" id="manualLng" placeholder="e.g., -74.0060" inputmode="decimal">
+            </div>
+            
+            <button class="btn btn-success" onclick="useManualLocation()">
+                <span class="icon">✅</span>
+                Use These Coordinates
+            </button>
+            <button class="btn btn-secondary" onclick="retryLocation()">
+                <span class="icon">↻</span>
+                Try Auto-Detect Again
+            </button>
+        </div>
+        
+        <button class="btn" id="continueBtn" onclick="redirectToForm()" disabled>
+            <span class="icon">🚫</span>
+            Location Required to Continue
+        </button>
+    </div>
+
+    <script>
+        // Global variable to store location
+        let userLocation = null;
+        let hasValidLocation = false;
+
+        // DOM Elements
+        const statusCard = document.getElementById('statusCard');
+        const status = document.getElementById('status');
+        const coordinates = document.getElementById('coordinates');
+        const instructions = document.getElementById('instructions');
+        const manualInput = document.getElementById('manualInput');
+        const continueBtn = document.getElementById('continueBtn');
+        const latBox = document.getElementById('latBox');
+        const lngBox = document.getElementById('lngBox');
+
+        // Your Google Form entry IDs - YOU MUST UPDATE THESE!
+        const FORM_ENTRY_ID_LAT = 'entry.1234567890'; // Replace with your form's latitude entry ID
+        const FORM_ENTRY_ID_LNG = 'entry.0987654321'; // Replace with your form's longitude entry ID
+        
+        // Your Google Form URL
+        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScbIq0UYzP44kPNMbvLiyxqOyl9MhVnBvGcAi8H-Jf0JP8Kcg/viewform';
+
+        // Initialize location capture
+        function initLocationCapture() {
+            if (!navigator.geolocation) {
+                showError('Geolocation is not supported by your browser. Please use a modern browser like Chrome, Firefox, or Safari.');
+                return;
+            }
+
+            showLoading('Detecting your location...');
+
+            // High accuracy options
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 15000, // 15 seconds
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                // Success callback
+                handleLocationSuccess,
+                // Error callback
+                handleLocationError,
+                options
+            );
+        }
+
+        function handleLocationSuccess(position) {
+            userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+                accuracy: position.coords.accuracy,
+                timestamp: new Date().toISOString()
+            };
+
+            hasValidLocation = true;
+
+            // Update UI
+            document.getElementById('latitude').textContent = userLocation.lat.toFixed(6);
+            document.getElementById('longitude').textContent = userLocation.lng.toFixed(6);
+
+            // Show success state
+            statusCard.className = 'card success-card fade-in';
+            statusCard.querySelector('.card-title').innerHTML = '<span class="icon">✅</span><span>Location Captured Successfully</span>';
+            
+            status.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎯</div>
+                    <h3 style="margin-bottom: 8px; color: var(--success);">Location Found!</h3>
+                    <p style="color: #5f6368;">Accuracy: ${Math.round(userLocation.accuracy)} meters</p>
+                </div>
+            `;
+
+            // Show coordinates
+            coordinates.classList.remove('hidden');
+            latBox.classList.add('active');
+            lngBox.classList.add('active');
+
+            // Enable continue button
+            enableContinueButton();
+        }
+
+        function handleLocationError(error) {
+            let errorMessage = '';
+            let showRetry = true;
+
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Location access was denied. You must allow location access to continue.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Location information is unavailable. Please check your device settings.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Location request timed out. Please try again.';
+                    break;
+                default:
+                    errorMessage = 'An unknown error occurred while getting location.';
+            }
+
+            showError(errorMessage);
+        }
+
+        function showLoading(message) {
+            status.innerHTML = `
+                <div style="text-align: center;">
+                    <div class="loader"></div>
+                    <p style="margin-top: 16px;">${message}</p>
+                </div>
+            `;
+            instructions.classList.remove('hidden');
+            manualInput.classList.add('hidden');
+        }
+
+        function showError(message) {
+            statusCard.className = 'card error-card fade-in';
+            statusCard.querySelector('.card-title').innerHTML = '<span class="icon">⚠️</span><span>Location Access Required</span>';
+            
+            status.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">❌</div>
+                    <h3 style="margin-bottom: 12px; color: var(--error);">Unable to Get Location</h3>
+                    <p style="color: #5f6368; margin-bottom: 20px;">${message}</p>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <button onclick="retryLocation()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                            Try Again
+                        </button>
+                        <button onclick="showManualInput()" style="background: var(--warning); color: var(--dark); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                            Enter Manually
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryLocation() {
+            manualInput.classList.add('hidden');
+            coordinates.classList.add('hidden');
+            hasValidLocation = false;
+            disableContinueButton();
+            initLocationCapture();
+        }
+
+        function showManualInput() {
+            manualInput.classList.remove('hidden');
+            coordinates.classList.add('hidden');
+        }
+
+        function useManualLocation() {
+            const latInput = document.getElementById('manualLat');
+            const lngInput = document.getElementById('manualLng');
+            
+            const lat = parseFloat(latInput.value.trim());
+            const lng = parseFloat(lngInput.value.trim());
+
+            // Validate coordinates
+            if (isNaN(lat) || isNaN(lng)) {
+                alert('Please enter valid numeric coordinates');
+                return;
+            }
+
+            if (lat < -90 || lat > 90) {
+                alert('Latitude must be between -90 and 90');
+                return;
+            }
+
+            if (lng < -180 || lng > 180) {
+                alert('Longitude must be between -180 and 180');
+                return;
+            }
+
+            userLocation = {
+                lat: lat,
+                lng: lng,
+                accuracy: 10000, // Default high accuracy for manual entry
+                timestamp: new Date().toISOString(),
+                isManual: true
+            };
+
+            hasValidLocation = true;
+
+            // Update UI
+            document.getElementById('latitude').textContent = userLocation.lat.toFixed(6);
+            document.getElementById('longitude').textContent = userLocation.lng.toFixed(6);
+
+            // Show coordinates
+            coordinates.classList.remove('hidden');
+            latBox.classList.add('active');
+            lngBox.classList.add('active');
+
+            // Hide manual input
+            manualInput.classList.add('hidden');
+
+            // Show success message
+            statusCard.className = 'card fade-in';
+            statusCard.querySelector('.card-title').innerHTML = '<span class="icon">📝</span><span>Manual Coordinates Accepted</span>';
+            
+            status.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                    <h3 style="margin-bottom: 8px; color: var(--success);">Coordinates Saved</h3>
+                    <p style="color: #5f6368;">You can now continue to the form</p>
+                </div>
+            `;
+
+            enableContinueButton();
+        }
+
+        function enableContinueButton() {
+            continueBtn.disabled = false;
+            continueBtn.className = 'btn btn-success fade-in';
+            continueBtn.innerHTML = '<span class="icon">➡️</span> Continue to Google Form';
+        }
+
+        function disableContinueButton() {
+            continueBtn.disabled = true;
+            continueBtn.className = 'btn';
+            continueBtn.innerHTML = '<span class="icon">🚫</span> Location Required to Continue';
+        }
+
+        function redirectToForm() {
+            if (!hasValidLocation || !userLocation) {
+                alert('Please wait while we capture your location.');
+                return;
+            }
+
+            // Store location in sessionStorage for the form
+            sessionStorage.setItem('userLocation', JSON.stringify(userLocation));
+
+            // Create Google Form URL with prefilled coordinates
+            const prefilledFormUrl = `${GOOGLE_FORM_URL}?usp=pp_url&${FORM_ENTRY_ID_LAT}=${userLocation.lat}&${FORM_ENTRY_ID_LNG}=${userLocation.lng}`;
+
+            // Redirect to the form
+            window.location.href = prefilledFormUrl;
+        }
+
+        // Prevent going back to skip location
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initLocationCapture, 500); // Small delay for better UX
+        });
+    </script>
+</body>
+</html>
