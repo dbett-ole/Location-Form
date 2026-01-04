@@ -411,8 +411,8 @@
         const FORM_ENTRY_ID_LAT = 'entry.2105679946'; // Latitude field ID
         const FORM_ENTRY_ID_LNG = 'entry.1094952733'; // Longitude field ID
         
-        // Your Google Form URL
-        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScbIq0UYzP44kPNMbvLiyxqOyl9MhVnBvGcAi8H-Jf0JP8Kcg/viewform';
+        // YOUR CORRECT GOOGLE FORM URL
+        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdyLUU5UDiklakJYQBdqfhql7uw9Z0g0YdBEWAoW20eUXNPQ/viewform';
 
         // Initialize location capture
         function initLocationCapture() {
@@ -618,8 +618,8 @@
                 return;
             }
 
-            // Create Google Form URL with prefilled coordinates - FIXED!
-            const prefilledFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLScbIq0UYzP44kPNMbvLiyxqOyl9MhVnBvGcAi8H-Jf0JP8Kcg/viewform?usp=pp_url&entry.2105679946=${userLocation.lat}&entry.1094952733=${userLocation.lng}`;
+            // Create Google Form URL with prefilled coordinates - UPDATED WITH CORRECT URL!
+            const prefilledFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSfdyLUU5UDiklakJYQBdqfhql7uw9Z0g0YdBEWAoW20eUXNPQ/viewform?usp=pp_url&entry.2105679946=${userLocation.lat}&entry.1094952733=${userLocation.lng}`;
 
             // Redirect to the form
             window.location.href = prefilledFormUrl;
